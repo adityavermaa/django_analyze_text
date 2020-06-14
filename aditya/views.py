@@ -5,56 +5,48 @@ from django.shortcuts import render
 def index(request):
     return render(request, 'index.html')
 
-def ex1(request):
-    sites = ['''For Entertainment youtube video''',
-             '''For Interaction Facebook''',
-             '''For Insight   Ted Talk''',
-             '''For Internship   Intenship''',
-             ]
-    return HttpResponse((sites))
-
 def analyze(request):
     
-    djtext = request.GET.get('text', 'default')
+    django_text = request.GET.get('text', 'default')
 
     
-    removepunc = request.GET.get('removepunc', 'off')
-    fullcaps = request.GET.get('fullcaps', 'off')
-    newlineremover = request.GET.get('newlineremover', 'off')
-    extraspaceremover = request.GET.get('extraspaceremover', 'off')
+    checkbox_punc = request.GET.get('checkbox_punc', 'off')
+    checkbox_upper = request.GET.get('checkbox_upper', 'off')
+    checkbox_newline_remover = request.GET.get('checkbox_newline_remover', 'off')
+    checkbox_extra_space_remover = request.GET.get('checkbox_extra_space_remover', 'off')
 
     
-    if removepunc == "on":
+    if checkbox_punc == "on":
         punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
         analyzed = ""
-        for char in djtext:
+        for char in django_text:
             if char not in punctuations:
                 analyzed = analyzed + char
         params = {'purpose':'Removed Punctuations', 'analyzed_text': analyzed}
         return render(request, 'analyze.html', params)
 
-    elif(fullcaps=="on"):
+    elif(checkbox_upper=="on"):
         analyzed = ""
-        for char in djtext:
+        for char in django_text:
             analyzed = analyzed + char.upper()
 
         params = {'purpose': 'Changed to Uppercase', 'analyzed_text': analyzed}
        
         return render(request, 'analyze.html', params)
 
-    elif(extraspaceremover=="on"):
+    elif(checkbox_newline_remover =="on"):
         analyzed = ""
-        for index, char in enumerate(djtext):
-            if not(djtext[index] == " " and djtext[index+1]==" "):
+        for index, char in enumerate(django_text):
+            if not(django_text[index] == " " and django_text[index+1]==" "):
                 analyzed = analyzed + char
 
         params = {'purpose': 'Removed NewLines', 'analyzed_text': analyzed}
         
         return render(request, 'analyze.html', params)
 
-    elif (newlineremover == "on"):
+    elif (checkbox_extra_space_remover == "on"):
         analyzed = ""
-        for char in djtext:
+        for char in django_text:
             if char != "\n":
                 analyzed = analyzed + char
 

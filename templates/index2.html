@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index-Page</title>
+</head>
+<body>
+<h1>Welcome to the text analyzer. Enter your text below</h1>
+<form action='/analyze' method='get'>
+    <textarea name='text' style='margin: 0px; width: 721px; height: 93px;'></textarea><br>
+
+    <input type="checkbox" name="checkbox_punc"> Remove Punctuations<br>
+    <input type="checkbox" name="checkbox_upper"> Upper case<br>
+    <input type="checkbox" name="checkbox_newline_remover"> New Line Remover<br>
+    <input type="checkbox" name="checkbox_extra_space_remover"> Extra Spaces Remover<br>
+    <button type='submit'> Analyze Text</button>
+
+</form>
+</body>
+</html>
