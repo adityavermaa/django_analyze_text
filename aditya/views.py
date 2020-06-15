@@ -1,58 +1,79 @@
-
 from django.http import HttpResponse
 from django.shortcuts import render
+
 
 def index(request):
     return render(request, 'index.html')
 
+
 def analyze(request):
-    
-    django_text = request.GET.get('text', 'default')
+    #Get the text
+    djtext = request.POST.get('text', 'default')
 
-    
-    checkbox_punc = request.GET.get('checkbox_punc', 'off')
-    checkbox_upper = request.GET.get('checkbox_upper', 'off')
-    checkbox_newline_remover = request.GET.get('checkbox_newline_remover', 'off')
-    checkbox_extra_space_remover = request.GET.get('checkbox_extra_space_remover', 'off')
+    # Check checkbox values
+    removepunc = request.POST.get('removepunc', 'off')
+    fullcaps = request.POST.get('fullcaps', 'off')
+    newlineremover = request.POST.get('newlineremover', 'off')
+    extraspaceremover = request.POST.get('extraspaceremover', 'off')
+    numberremover = request.POST.get('numberremover','off')
 
-    
-    if checkbox_punc == "on":
+    #Check which checkbox is on
+    if removepunc == "on":
         punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
         analyzed = ""
-        for char in django_text:
+        for char in djtext:
             if char not in punctuations:
                 analyzed = analyzed + char
-        params = {'purpose':'Removed Punctuations', 'analyzed_text': analyzed}
-        return render(request, 'analyze.html', params)
 
-    elif(checkbox_upper=="on"):
+        params = {'purpose':'Removed Punctuations', 'analyzed_text': analyzed}
+        djtext = analyzed
+
+    if(fullcaps=="on"):
         analyzed = ""
-        for char in django_text:
+        for char in djtext:
             analyzed = analyzed + char.upper()
 
         params = {'purpose': 'Changed to Uppercase', 'analyzed_text': analyzed}
-       
-        return render(request, 'analyze.html', params)
+        djtext = analyzed
 
-    elif(checkbox_newline_remover =="on"):
+    if(extraspaceremover=="on"):
         analyzed = ""
-        for index, char in enumerate(django_text):
-            if not(django_text[index] == " " and django_text[index+1]==" "):
+        for index, char in enumerate(djtext):
+            # It is for if a extraspace is in the last of the string
+            if char == djtext[-1]:
+                    if not(djtext[index] == " "):
+                        analyzed = analyzed + char
+
+            elif not(djtext[index] == " " and djtext[index+1]==" "):                        
                 analyzed = analyzed + char
 
         params = {'purpose': 'Removed NewLines', 'analyzed_text': analyzed}
-        
-        return render(request, 'analyze.html', params)
+        djtext = analyzed
 
-    elif (checkbox_extra_space_remover == "on"):
+    if (newlineremover == "on"):
         analyzed = ""
-        for char in django_text:
-            if char != "\n":
+        for char in djtext:
+            if char != "\n" and char!="\r":
                 analyzed = analyzed + char
 
         params = {'purpose': 'Removed NewLines', 'analyzed_text': analyzed}
-        
-        return render(request, 'analyze.html', params)
-    else:
-        return HttpResponse("Error")
+    
+    if (numberremover == "on"):
+        analyzed = ""
+        numbers = '0123456789'
 
+        for char in djtext:
+            if char not in numbers:
+                analyzed = analyzed + char
+        
+        params = {'purpose': 'Removed NewLines', 'analyzed_text': analyzed}
+        djtext = analyzed
+
+    
+    if(removepunc != "on" and newlineremover!="on" and extraspaceremover!="on" and fullcaps!="on" and numberremover != "on"):
+        return HttpResponse("please select any operation and try again")
+
+    return render(request, 'analyze.html', params)
+
+def about(request):
+    return render(request, 'about.html')
